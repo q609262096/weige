@@ -24,8 +24,7 @@ jobs:
           curl ipinfo.io/json
       
       - name: '【书旗小说】'
-        run: |
-          cd ~/JavaScripts   
+        run: |  
           node Task/sqxs2.js
  
 
