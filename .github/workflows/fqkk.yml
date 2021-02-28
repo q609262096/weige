@@ -35,14 +35,12 @@ jobs:
           node-version: 12.x
       - name: npm install
         run: |
-          cd ~/JavaScripts
           npm install -g npm
           npm update
 
       - name: '运行 【番茄看看】'
         if: env.fqkkurl
         run: |
-          cd ~/JavaScripts
           node Task/fqkk.js
         env:
           fqkkurl: ${{ secrets.fqkkurl }}
