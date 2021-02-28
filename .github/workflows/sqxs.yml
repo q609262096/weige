@@ -11,8 +11,6 @@ jobs:
     steps:
       
       - name: Checkout
-        run: |
-          git clone https://github.com/chennfen/JavaScripts.git ~/JavaScripts
       - name: Use Node.js 14.x
         uses: actions/setup-node@v1
         with:
