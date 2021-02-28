@@ -1,0 +1,31 @@
+name: sqxs@cxk3
+on:
+  workflow_dispatch:
+  watch:
+    types: started
+  schedule:
+    - cron: '0 12,21 * * *'
+jobs:
+  build:
+    runs-on: ubuntu-latest       
+    steps:
+      
+      - name: Checkout
+        run: |
+          git clone https://github.com/chennfen/JavaScript.git ~/JavaScript
+      - name: Use Node.js 14.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+      - name: npm install
+        run: |
+          cd ~/JavaScript
+          npm install
+          npm install cron
+          npm install request
+          curl ipinfo.io/json
+      
+      - name: '【书旗小说】'
+        run: |
+          cd ~/JavaScript   
+          node Task/sqxs.js
