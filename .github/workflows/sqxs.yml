@@ -1,4 +1,4 @@
-name: sqxs@cxk3
+name: sqxs@cxk6
 on:
   workflow_dispatch:
   watch:
@@ -18,7 +18,6 @@ jobs:
           node-version: 14.x
       - name: npm install
         run: |
-          cd ~/JavaScripts
           npm install
           npm install cron
           npm install request
@@ -26,5 +25,4 @@ jobs:
       
       - name: '【书旗小说】'
         run: |
-          cd ~/JavaScripts   
           node Task/sqxs.js
