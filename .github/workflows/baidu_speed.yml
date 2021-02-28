@@ -30,7 +30,7 @@ jobs:
         if: env.BAIDU_COOKIE
         run: |
           cd ~/Scripts
-          node Task/baidu_speed2.js
+          node Task/baidu_speed.js
         env:
           BAIDU_CASH: ${{ secrets.BAIDU_CASH }}
           BAIDU_COOKIE: ${{ secrets.BAIDU_COOKIE }}
