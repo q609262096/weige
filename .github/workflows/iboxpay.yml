@@ -28,12 +28,10 @@ jobs:
       - name: npm install
         if: env.XP_REFRESHTOKEN
         run: |
-          cd ~/JavaScripts
           npm install
       - name: '运行 【笑谱】'
         if: env.XP_REFRESHTOKEN
         run: |
-          cd ~/JavaScripts
           node Task/iboxpay.js
         env:
           PUSH_KEY: ${{ secrets.PUSH_KEY }}
