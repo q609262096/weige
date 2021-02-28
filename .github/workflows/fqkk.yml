@@ -6,7 +6,8 @@ name: fqkk@feizao3
 on:
   workflow_dispatch:
   schedule:
-     - cron: '0 5,7,9,11,13 * * *'
+     - cron: '0 6-13/3 * * *'
+     - cron: '30 4-12/3 * * *'
   watch:
     types: started
 
