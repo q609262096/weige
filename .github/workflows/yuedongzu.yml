@@ -15,6 +15,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+        YDZ_yuedongzuTOKEN: ${{ secrets.YDZ_yuedongzuTOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -26,6 +28,7 @@ jobs:
         run: |
           npm install
       - name: '运行 【悦动族】'
+        if: env.YDZ_yuedongzuTOKEN
         run: |
           node Task/yuedongzu.js
         env:
