@@ -23,7 +23,7 @@ jobs:
           npm install cron
           npm install request
       
-      - name: '【悦动组】'
+      - name: '【悦动族】'
         run: |
           node Task/yuedongzu.js
  
