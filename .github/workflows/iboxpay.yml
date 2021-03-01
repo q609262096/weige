@@ -6,7 +6,7 @@ name: xp@ziye3
 on:
   workflow_dispatch:
   schedule:
-     - cron: '*/15 0-12 * * *'
+     - cron: '*/15 0-15 * * *'
   watch:
     types: started
 jobs:
