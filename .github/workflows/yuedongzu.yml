@@ -1,38 +1,29 @@
-# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
-
 name: yuedongzu@ziye3
-
 on:
-    workflow_dispatch:
-    schedule:
-      - cron: "0,30 * * * *"
-    watch:
-      types: [started]
-    repository_dispatch:
-      types: yuedongzu
-
+  workflow_dispatch:
+  watch:
+    types: started
+  schedule:
+    - cron: '0,30 * * * *'
 jobs:
   build:
-    runs-on: ubuntu-latest
-    env:
-        YDZ_yuedongzuTOKEN: ${{ secrets.YDZ_yuedongzuTOKEN }}
+    runs-on: ubuntu-latest       
     steps:
+      
+      
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Use Node.js 12.x
+      - name: Use Node.js 14.x
         uses: actions/setup-node@v1
         with:
-          node-version: 12.x
+          node-version: 14.x
       - name: npm install
         run: |
           npm install
-      - name: '运行 【悦动族】'
-        if: env.YDZ_yuedongzuTOKEN
+          npm install cron
+          npm install request
+      
+      - name: '【悦动组】'
         run: |
           node Task/yuedongzu.js
-        env:
-          PUSH_KEY: ${{ secrets.PUSH_KEY }}
-          TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
-          TG_USER_ID: ${{ secrets.TG_USER_ID }}
-
+ 
