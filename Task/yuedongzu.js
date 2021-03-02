@@ -13,6 +13,7 @@ boxjs链接  https://raw.githubusercontent.com/ziye11/JavaScript/main/Task/ziye.
 3.1 完成
 3.1-2 修复前置报错，修复签到问题
 3.2 调整抽奖机制，一次运行5次抽奖，抽中1000金币则兑奖
+3.2 修复手机不能跑的低级错误,调整提现时间为8点以后
 
 ⚠️ 时间设置    0,30 0-23 * * *    每天 25次以上就行 
 
@@ -743,7 +744,7 @@ function zhuan_index(timeout = 0) {
     return new Promise((resolve) => {
         setTimeout(() => {
             let url = {
-                url: `https://yuedongzu.yichengw.cn/apps/zhuan_index? `,
+                url: `https://yuedongzu.yichengw.cn/apps/zhuan_index?`,
                 headers: header,
             }
             $.post(url, async (err, resp, data) => {
@@ -862,7 +863,7 @@ function zhuan_done(timeout = 0) {
     return new Promise((resolve) => {
         setTimeout(() => {
             let url = {
-                url: `https://yuedongzu.yichengw.cn/apps/zhuan_done? `,
+                url: `https://yuedongzu.yichengw.cn/apps/zhuan_done?`,
                 headers: header,
                 body: `taskid=${taskid}&`,
             }
@@ -988,7 +989,7 @@ function sleep_start(timeout = 0) {
     return new Promise((resolve) => {
         setTimeout(() => {
             let url = {
-                url: `https://yuedongzu.yichengw.cn/mini/sleep_start?`,
+                url: `https://yuedongzu.yichengw.cn/apps/sleep_start?`,
                 headers: header,
             }
             $.post(url, async (err, resp, data) => {
@@ -1013,7 +1014,7 @@ function sleep_end(timeout = 0) {
     return new Promise((resolve) => {
         setTimeout(() => {
             let url = {
-                url: `https://yuedongzu.yichengw.cn/mini/sleep_end?`,
+                url: `https://yuedongzu.yichengw.cn/apps/sleep_end?`,
                 headers: header,
             }
             $.post(url, async (err, resp, data) => {
@@ -1161,7 +1162,7 @@ function guapost(timeout = 0) {
     return new Promise((resolve) => {
         setTimeout(() => {
             let url = {
-                url: `https://yuedongzu.yichengw.cn/apps/gua/det_post? `,
+                url: `https://yuedongzu.yichengw.cn/apps/gua/det_post?`,
                 headers: header,
                 body: `sign=${sign}&gid=${id}&glid=${glid}&`,
             }
@@ -1282,7 +1283,7 @@ function mystate(timeout = 0) {
     return new Promise((resolve) => {
         setTimeout(() => {
             let url = {
-                url: `https://yuedongzu.yichengw.cn/apps/mystate? `,
+                url: `https://yuedongzu.yichengw.cn/apps/mystate?`,
                 headers: header,
             }
             $.post(url, async (err, resp, data) => {
@@ -1561,7 +1562,7 @@ function news_info(timeout = 0) {
     return new Promise((resolve) => {
         setTimeout(() => {
             let url = {
-                url: `https://yuedongzu.yichengw.cn/apps/news_info? `,
+                url: `https://yuedongzu.yichengw.cn/apps/news_info?`,
                 headers: header,
                 body: `type_class=1&`,
             }
@@ -1595,7 +1596,7 @@ function news_done(timeout = 0) {
     return new Promise((resolve) => {
         setTimeout(() => {
             let url = {
-                url: `https://yuedongzu.yichengw.cn/apps/news_done?  `,
+                url: `https://yuedongzu.yichengw.cn/apps/news_done?`,
                 headers: header,
                 body: `nonce_str=${nonce_str}&`,
             }
@@ -1621,7 +1622,7 @@ function tixian_html(timeout = 0) {
     return new Promise((resolve) => {
         setTimeout(() => {
             let url = {
-                url: `https://yuedongzu.yichengw.cn/apps/user/tixian_html?  `,
+                url: `https://yuedongzu.yichengw.cn/apps/user/tixian_html?`,
                 headers: header,
             }
             $.post(url, async (err, resp, data) => {
@@ -1642,7 +1643,7 @@ function tixian_html(timeout = 0) {
                         }
                         console.log(`提现券：剩余${$.tixian_html.tixian_coupon}张券\n${jine2.jine}元：需要${jine2.cond}张券\n${jine3.jine}元：需要${jine3.cond}张券\n`);
                         $.message += `【提现券】：剩余${$.tixian_html.tixian_coupon}张券\n【${jine2.jine}元】：需要${jine2.cond}张券\n【${jine3.jine}元】：需要${jine3.cond}张券\n`;
-                        if (!day_tixian_tip) {
+                        if (!day_tixian_tip && nowTimes.getHours() >= 8) {
                             if (CASH == 0.3 && $.user.money >= CASH) {
                                 await tixian() //提现
                             }
@@ -1689,7 +1690,7 @@ function tixian(timeout = 0) {
     return new Promise((resolve) => {
         setTimeout(() => {
             let url = {
-                url: `https://yuedongzu.yichengw.cn/apps/user/tixian? `,
+                url: `https://yuedongzu.yichengw.cn/apps/user/tixian?`,
                 headers: header,
                 body: `tx=${CASH}&`,
             }
