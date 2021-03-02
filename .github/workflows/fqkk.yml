@@ -36,7 +36,7 @@ jobs:
           npm update
 
       - name: '运行 【番茄看看】'
-        if: env.FQKK_HD
+        if: env.fqkkurl
         run: |
           node Task/fqkk.js
         env:
