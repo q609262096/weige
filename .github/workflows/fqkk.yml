@@ -14,15 +14,11 @@ on:
 jobs:
   build:
     env:
-      fqkkurl: ${{ secrets.fqkkurl }}
-      fqkkhd: ${{ secrets.fqkkhd }}
+      FQKK_URL: ${{ secrets.FQKK_URL }}
+      FQKK_HD: ${{ secrets.FQKK_HD }}   
       PUSH_KEY: ${{ secrets.PUSH_KEY }}
-      BARK_PUSH: ${{ secrets.BARK_PUSH }}
       TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
       TG_USER_ID: ${{ secrets.TG_USER_ID }}
-      BARK_SOUND: ${{ secrets.BARK_SOUND }}
-      DD_BOT_TOKEN: ${{ secrets.DD_BOT_TOKEN }}
-      DD_BOT_SECRET: ${{ secrets.DD_BOT_SECRET }}
 
 
     runs-on: ubuntu-latest
@@ -40,12 +36,12 @@ jobs:
           npm update
 
       - name: '运行 【番茄看看】'
-        if: env.fqkkurl
+        if: env.FQKK_HD
         run: |
           node Task/fqkk.js
         env:
-          fqkkurl: ${{ secrets.fqkkurl }}
-          fqkkhd: ${{ secrets.fqkkhd }}
+          FQKK_URL: ${{ secrets.FQKK_URL }}
+          FQKK_HD: ${{ secrets.FQKK_HD }}   
 
 
 
