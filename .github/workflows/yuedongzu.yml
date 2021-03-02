@@ -7,7 +7,10 @@ on:
     - cron: '0,30 * * * *'
 jobs:
   build:
-    runs-on: ubuntu-latest       
+    runs-on: ubuntu-latest   
+    if: github.event.repository.owner.id == github.event.sender.id
+    env:
+        YDZ_CASH: ${{ secrets.YDZ_CASH }}
     steps:
       
       
@@ -26,4 +29,9 @@ jobs:
       - name: '【悦动族】'
         run: |
           node Task/yuedongzu.js
+          
+          
+        env:
+           YDZ_CASH: ${{ secrets.YDZ_CASH }}
+        
  
