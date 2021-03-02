@@ -1,142 +1,100 @@
 /*
-软件名称:番茄看看 微信扫描二维码打开
-更新时间：2021-02-24 @肥皂 
-脚本说明：番茄看看自动阅读
-脚本为自动完成番茄看看的阅读任务
-每日收益1.7元左右，可多号撸。提现秒到
-
-任务打开二维码地址 https://raw.githubusercontent.com/age174/-/main/3F545C70-389B-4155-ACB1-15B6FDA95501.jpeg
-
-可以去boxjs修改自动提现金额和循环次数
-最低提现额度为0.3元，默认提现1元
-最多任务次数为100次，默认为25次运行一回
-
-本脚本以学习为主！
-首次运行脚本，会提示获取数据
-去番茄看看，点击阅读A任务，开始阅读，
-完成一次阅读即可获取数据。
-
-TG电报群: https://t.me/hahaha8028
-
-我的邀请码 : 3950781  感谢大佬们填写
-
-
-注意:如果重定向跳转失败或者跑脚本没有key没有提交成功，请手动去做一个阅读A任务再执行脚本。
-
-2.24更新 运行日志加入boxjs设置的循环次数和提现金额，key提交因为有很多302重定向，如跑脚本没有金币请查看日志的重定向是否错误
-已修改循环方式，方式循环方式为一直阅读，直到当前无任务可做自动停止
-
-boxjs地址 :
-
-https://raw.githubusercontent.com/age174/-/main/feizao.box.json
-
-
-番茄看看
-圈X配置如下，其他软件自行测试
-[task_local]
-#番茄看看
-15 12,14,16,20 * * * https://raw.githubusercontent.com/age174/-/main/fqkk.js, tag=番茄看看, img-url=https://ftp.bmp.ovh/imgs/2021/02/f8306006536eb49c.jpeg, enabled=true
-
-
-[rewrite_local]
-#番茄看看
-^http://m.*.top/reada/getTask url script-request-header https://raw.githubusercontent.com/age174/-/main/fqkk.js
-
-
-
-#loon
-^http://m.*.top/reada/getTask script-path=https://raw.githubusercontent.com/age174/-/main/fqkk.js, requires-header=true, timeout=10, tag=番茄看看
-
-
-
-#surge
-
-番茄看看 = type=http-request,pattern=^http://m.*.top/reada/getTask,requires-header=1,max-size=0,script-path=https://raw.githubusercontent.com/age174/-/main/fqkk.js,script-update-interval=0
-
-
-
-
-[MITM]
-hostname = m.*.top
-
-
+allenqq1209
 */
 
 
 const $ = new Env('番茄看看自动阅读');
 let status;
 status = (status = ($.getval("fqkkstatus") || "1") ) > 1 ? `${status}` : ""; // 账号扩展字符
-const fqkkurlArr = [], fqkkhdArr = [],fqkkbodyArr = [],fqkkcount = ''
+let fqkkurlArr = [], fqkkhdArr = [],fqkkbodyArr = [],fqkkcount = ''
 let fqkkurl = $.getdata('fqkkurl')
 let fqkkhd = $.getdata('fqkkhd')
 let fqkey = ''
-let fqtx = ($.getval('fqtx') || '200');  // 此处修改提现金额，0.3元等于30，默认为提现一元，也就是100
-let fqjs = 1
-
+let fqkkxh = ($.getval('fqkkxh') || '20');  // 此处修改循环次数，默认一百
+let fqtx = ($.getval('fqtx') || '100');  // 此处修改提现金额，0.1元等于10，默认为提现一元，也就是100
+let max = 27;
+let min = 7;
 
 if ($.isNode()) {
-
-  if (process.env.fqkkurl && process.env.fqkkurl.indexOf('#') > -1) {
-  fqkkurl = process.env.fqkkurl.split('#');
-  console.log(`您选择的是用"#"隔开\n`)
+   if (process.env.FQKK_URL && process.env.FQKK_URL.indexOf('#') > -1) {
+   fqkkurlArr = process.env.FQKK_URL.split('#');
+   console.log(`您选择的是用"#"隔开\n`)
   }
-  else if (process.env.fqkkurl && process.env.fqkkurl.indexOf('\n') > -1) {
-   fqkkurl = process.env.fqkkurl.split('\n');
+  else if (process.env.FQKK_URL && process.env.FQKK_URL.indexOf('\n') > -1) {
+   fqkkurlArr = process.env.FQKK_URL.split('\n');
    console.log(`您选择的是用换行隔开\n`)
   } else {
-   fqkkurl = process.env.fqkkurl.split()
+   fqkkurlArr = process.env.FQKK_URL.split()
   };
-  Object.keys(fqkkurl).forEach((item) => {
-        if (fqkkurl[item]) {
-          fqkkurlArr.push(fqkkurl[item])
-        }
-    });
-
-  if (process.env.fqkkhd && process.env.fqkkhd.indexOf('#') > -1) {
-  fqkkhd = process.env.fqkkhd.split('#');
-  console.log(`您选择的是用"#"隔开\n`)
+  if (process.env.FQKK_HD && process.env.FQKK_HD.indexOf('#') > -1) {
+   fqkkhdArr = process.env.FQKK_HD.split('#');
+   console.log(`您选择的是用"#"隔开\n`)
   }
-  else if (process.env.fqkkhd && process.env.fqkkhd.indexOf('\n') > -1) {
-   fqkkhd = process.env.fqkkhd.split('\n');
+  else if (process.env.FQKK_HD && process.env.FQKK_HD.indexOf('\n') > -1) {
+   fqkkhdArr = process.env.FQKK_HD.split('\n');
    console.log(`您选择的是用换行隔开\n`)
   } else {
-   fqkkhd = process.env.fqkkhd.split()
+   fqkkhdArr = process.env.FQKK_HD.split()
   };
-  Object.keys(fqkkhd).forEach((item) => {
-        if (fqkkhd[item]) {
-          fqkkhdArr.push(fqkkhd[item])
+/*  if (process.env.RLBODY && process.env.RLBODY.indexOf('#') > -1) {
+   rlbody = process.env.RLBODY.split('#');
+   console.log(`您选择的是用"#"隔开\n`)
+  }
+  else if (process.env.RLBODY && process.env.RLBODY.indexOf('\n') > -1) {
+   rlbody = process.env.RLBODY.split('\n');
+   console.log(`您选择的是用换行隔开\n`)
+  } else {
+   rlbody = process.env.RLBODY.split()
+  };*/
+	
+ /*  Object.keys(rlurl).forEach((item) => {
+        if (rlurl[item]) {
+          rlurlArr.push(rlurl[item])
         }
     });
-}
-else {
-  fqkkurlArr.push($.getdata('fqkkurl'))
-  fqkkhdArr.push($.getdata('fqkkhd'))
-  let fqkkcount = ($.getval('fqkkcount') || '1');
+    Object.keys(rlheader).forEach((item) => {
+        if (rlheader[item]) {
+          rlheaderArr.push(rlheader[item])
+        }
+    });  	
+    Object.keys(rlbody).forEach((item) => {
+        if (rlbody[item]) {
+          rlbodyArr.push(rlbody[item])
+        }
+    });  */
+	
+    console.log(`============ 脚本执行-国际标准时间(UTC)：${new Date().toLocaleString()}  =============\n`)
+    console.log(`============ 脚本执行-北京时间(UTC+8)：${new Date(new Date().getTime() + 8 * 60 * 60 * 1000).toLocaleString()}  =============\n`)
+ } else {
+    fqkkurlArr.push($.getdata('fqkkurl'))
+    fqkkhdArr.push($.getdata('fqkkhd'))
+    let fqkkcount = ($.getval('fqkkcount') || '1');
   for (let i = 2; i <= fqkkcount; i++) {
-   fqkkurlArr.push($.getdata(`fqkkurl${i}`))
-   fqkkhdArr.push($.getdata(`fqkkhd${i}`))
+    fqkkurlArr.push($.getdata(`fqkkurl${i}`))
+    fqkkhdArr.push($.getdata(`fqkkhd${i}`))
   }
 }
 
 !(async () => {
-    if (typeof $request !== "undefined") {
-      await fqkkck()
-    }
+if (!fqkkhdArr[0]) {
+    $.msg($.name, '【提示】请先获取番茄看看一cookie')
+    return;
+  }
     console.log(`------------- 共${fqkkhdArr.length}个账号-------------\n`)
     console.log('\n番茄看看当前设置的提现金额为: '+fqtx / 100 + ' 元')
       for (let i = 0; i < fqkkhdArr.length; i++) {
         if (fqkkhdArr[i]) {
-
+         
           fqkkurl = fqkkurlArr[i];
           fqkkhd = fqkkhdArr[i];
           $.index = i + 1;
           console.log(`\n开始【番茄看看${$.index}】`)
+
     await fqkk1();
 
-    }
-    await fqkktx();
   }
-
+    await fqkktx();
+}
 })()
   .catch((e) => $.logErr(e))
   .finally(() => $.done())
@@ -159,19 +117,21 @@ $.log(fqkkhd)
 function fqkk3(timeout = 0) {
   return new Promise((resolve) => {
 let url = {
-        url : "http://m."+fqkkurl.match(/m.(.*?).top/)[1]+".top/reada/finishTask",
+        url : "http://m."+fqkkurl.match(/m.(.*?)reada/)[1]+"reada/finishTask",
         headers : JSON.parse(fqkkhd),
         body : 'readLastKey='+fqkey,}
       $.post(url, async (err, resp, data) => {
         try {
-
+           
     const result = JSON.parse(data)
         if(result.code == 0){
         console.log('\n番茄看看领取阅读奖励回执:成功🌝 '+result.msg+'\n今日阅读次数: '+result.data.infoView.num+' 今日阅读奖励: '+result.data.infoView.score)
+        await $.wait(1000);
+	await fqkk1();
 } else {
        console.log('\n番茄看看领取阅读奖励回执:失败🚫 '+result.msg+'\n今日阅读次数: '+result.data.infoView.num+' 今日阅读奖励: '+result.data.infoView.score)
 }
-
+   
         } catch (e) {
           //$.logErr(e, resp);
         } finally {
@@ -181,27 +141,30 @@ let url = {
   })
 }
 
-//番茄看看提交
+//番茄看看提交     
 function fqkk2(timeout = 0) {
   return new Promise((resolve) => {
 let url = {
-        url : "http://m."+fqkkurl.match(/m.(.*?).top/)[1]+".top/reada/jump?key="+fqkey,
+        url : "http://m."+fqkkurl.match(/m.(.*?)reada/)[1]+"reada/jump?key="+fqkey,
         headers : JSON.parse(fqkkhd),
-
-}
+       
+}      
       $.get(url, async (err, resp, data) => {
         try {
          //console.log('\n开始重定向跳转，跳转返回结果：'+data)
         if (err) {
           console.log(`${$.name} 请求失败，请检查网路重试`)
         } else {
-
+           
     //const result = JSON.parse(data)
-       console.log('\n番茄看看key提交成功,即将开始领取阅读奖励')
-
-        await $.wait(10000);
-        await fqkk3();
-
+       console.log('\n番茄看看key提交成功,即将开始领取阅读奖励') 
+	await fqread();
+        random = Math.floor(Math.random()*(max-min+1)+min)*1000
+        console.log(random);
+	await $.wait(random);       
+       // await $.wait(15000);
+        await fqkk3(); 
+       
         }} catch (e) {
           //$.logErr(e, resp);
         } finally {
@@ -216,28 +179,30 @@ let url = {
 //番茄看看key
 function fqkk1(timeout = 0) {
   return new Promise((resolve) => {
-    setTimeout( ()=>{
+/*    setTimeout( ()=>{
       if (typeof $.getdata('fqkkhd') === "undefined") {
         $.msg($.name,"",'请先获取番茄看看数据!😓',)
         $.done()
-      }
+      }  */
+let fqjs = 1
+//console.log(fqkkurl.match(/m.(.*?)reada/)[1])
+
 let url = {
-        url : "http://m."+fqkkurl.match(/m.(.*?).top/)[1]+".top/reada/getTask",
+        url : "http://m."+fqkkurl.match(/m.(.*?)reada/)[1]+"reada/getTask",
         headers : JSON.parse(fqkkhd),
         body : '',}
       $.post(url, async (err, resp, data) => {
         try {
-
+          
     const result = JSON.parse(data)
         if(result.code == 0){
         console.log('\n番茄看看获取key回执:成功🌝 开始第 '+fqjs+' 次循环💦')
         fqkey = result.data.jkey
         console.log(fqkey)
         await fqkk2();
-        await fqread();
+        //await fqread();
         await $.wait(1000);
         fqjs++
-        await fqkk1();
 } else {
 console.log('番茄看看获取key回执:失败🚫 '+result.msg+' 已停止当前账号运行!')
 }
@@ -246,7 +211,7 @@ console.log('番茄看看获取key回执:失败🚫 '+result.msg+' 已停止当�
         } finally {
           resolve()
         }
-      })
+//      })
     },timeout)
   })
 }
@@ -256,19 +221,19 @@ console.log('番茄看看获取key回执:失败🚫 '+result.msg+' 已停止当�
 function fqkktx(timeout = 0) {
   return new Promise((resolve) => {
 let url = {
-        url : "http://m."+fqkkurl.match(/m.(.*?).top/)[1]+".top/withdrawal/doWithdraw",
+        url : "http://m."+fqkkurl.match(/m.(.*?)reada/)[1]+"withdrawal/doWithdraw",
         headers : JSON.parse(fqkkhd),
         body : 'amount='+fqtx,}
       $.post(url, async (err, resp, data) => {
         try {
-
+           
     const result = JSON.parse(data)
         if(result.code == 0){
         console.log('\n番茄看看提现回执:成功🌝 ')
 } else {
        console.log('\n番茄看看提现回执:失败🚫 '+result.msg)
 }
-
+   
         } catch (e) {
           //$.logErr(e, resp);
         } finally {
@@ -283,16 +248,16 @@ let url = {
 function fqread(timeout = 0) {
   return new Promise((resolve) => {
 let url = {
-        url : "http://m."+fqkkurl.match(/m.(.*?).top/)[1]+".top/reada/toRead?sign="+fqkey+"&for=",
+        url : "http://m."+fqkkurl.match(/m.(.*?)reada/)[1]+"reada/toRead?sign="+fqkey+"&for=",
         headers : JSON.parse(fqkkhd),
    }
       $.get(url, async (err, resp, data) => {
         try {
-
+           
     const result = JSON.parse(data)
-
+        
         console.log(result)
-
+   
         } catch (e) {
           //$.logErr(e, resp);
         } finally {
