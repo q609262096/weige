@@ -61,7 +61,7 @@ $.idx = ($.idx = ($.getval('bububaoSuffix') || '1') - 1) > 0 ? ($.idx + 1 + '') 
 const notify = $.isNode() ? require("./sendNotify") : ``;
 const COOKIE = $.isNode() ? require("./bububaoCOOKIE") : ``;
 const logs = 0; // 0为关闭日志，1为开启
-const notifyttt = 0 // 0为关闭外部推送，1为12 23 点外部推送
+const notifyttt = 1 // 0为关闭外部推送，1为12 23 点外部推送
 const notifyInterval = 2; // 0为关闭通知，1为所有通知，2为12 23 点通知  ， 3为 6 12 18 23 点通知 
 $.message = '', COOKIES_SPLIT = '', CASH = '', ddtime = '';
 const bububaotokenArr = [];
