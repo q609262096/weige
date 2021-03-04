@@ -26,5 +26,5 @@ jobs:
       
       - name: '【羊毛赚】'
         run: |
-          node Task/ymz_test.js
+          node Task/ymz.js
  
