@@ -25,9 +25,9 @@ jobs:
       - name: npm install
         run: |
           npm install
-      - name: '运行 【步步宝】'
+      - name: '运行 【全民悦动】'
         run: |
-          node Task/bububao.js
+          node Task/qmyd.js
         env:
           PUSH_KEY: ${{ secrets.PUSH_KEY }}
           BARK_PUSH: ${{ secrets.BARK_PUSH }}
