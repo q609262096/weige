@@ -3,7 +3,7 @@
 更新时间：2021-02-24 @肥皂 
 脚本说明：番茄看看自动阅读
 脚本为自动完成番茄看看的阅读任务
-每日收益1.7元左右，可多号撸。提现秒到
+每日收益2.7元左右，可多号撸。提现秒到
 
 任务打开二维码地址 https://raw.githubusercontent.com/age174/-/main/3F545C70-389B-4155-ACB1-15B6FDA95501.jpeg
 
@@ -70,7 +70,7 @@ const fqkkurlArr = [], fqkkhdArr = [],fqkkbodyArr = [],fqkkcount = ''
 let fqkkurl = $.getdata('fqkkurl')
 let fqkkhd = $.getdata('fqkkhd')
 let fqkey = ''
-let fqtx = ($.getval('fqtx') || '150');  // 此处修改提现金额，0.3元等于30，默认为提现一元，也就是100
+let fqtx = ($.getval('fqtx') || '256');  // 此处修改提现金额，0.3元等于30，默认为提现一元，也就是100
 let fqjs = 1
 
 
