@@ -27,7 +27,7 @@ jobs:
       - name: '运行 【悬赏喵喵】'
         if: env.XSMM_HD
         run: |
-          node task/xsmm.js
+          node Task/xsmm.js
         env:
           PUSH_KEY: ${{ secrets.PUSH_KEY }}
           BARK_PUSH: ${{ secrets.BARK_PUSH }}
