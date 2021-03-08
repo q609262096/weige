@@ -1,8 +1,8 @@
 /* ziye 
-github地址 https://github.com/ziye66666
+github地址 https://github.com/6Svip120apk69
 TG频道地址  https://t.me/ziyescript
 TG交流群   https://t.me/joinchat/AAAAAE7XHm-q1-7Np-tF3g
-boxjs链接  https://raw.githubusercontent.com/ziye66666/JavaScript/main/Task/ziye.boxjs.json
+boxjs链接  https://raw.githubusercontent.com/6Svip120apk69/gitee_q8qsTAUA_cThxc1RBVUE/main/Task/ziye.boxjs.json
 转载请备注个名字，谢谢
 
 ⚠️笑谱
@@ -41,6 +41,8 @@ boxjs链接  https://raw.githubusercontent.com/ziye66666/JavaScript/main/Task/zi
 2.10-2 移除红包雨模块
 2.11 移除视频时间限制，LIVE设置666做新人180秒任务
 2.26 适配直播上限20次
+3.5 设置888由上至下循环提现
+3.8 替换为循环获取ck
 
 ⚠️一共1个位置 1个ck  👉 5条 Secrets 
 多账号换行
@@ -73,8 +75,8 @@ refreshtokenVal 👉XP_refreshTOKEN
 设置任务 可设置 0 1 2    0开视频关直播 1开视频开直播 2关视频开直播
  LIVE  👉  XP_live
 
-设置提现金额 可设置 0 1 15 30 50 100  默认0关闭
-CASH  👉  XP_CASH
+设置提现金额 可设置 0 1 15 30 50 100 888 默认0关闭  设置888由上至下循环提现
+CASH  👉  XP_CASH 
 
 设置手机号 
  phone  👉  XP_phone
@@ -91,15 +93,15 @@ hostname=veishop.iboxpay.com
 ############## 圈x
 
 #笑谱获取更新TOKEN
-https:\/\/veishop\.iboxpay\.com\/nf_gateway\/nf-user-auth-web\/ignore_tk\/veishop\/v1\/* url script-response-body https://raw.githubusercontent.com/ziye66666/JavaScript/main/Task/iboxpay.js
+https:\/\/veishop\.iboxpay\.com\/nf_gateway\/nf-user-auth-web\/ignore_tk\/veishop\/v1\/* url script-response-body https://raw.githubusercontent.com/6Svip120apk69/gitee_q8qsTAUA_cThxc1RBVUE/main/Task/iboxpay.js
 
 ############## loon
-http-response https:\/\/veishop\.iboxpay\.com\/nf_gateway\/nf-user-auth-web\/ignore_tk\/veishop\/v1\/* script-path=https://raw.githubusercontent.com/ziye66666/JavaScript/main/Task/iboxpay.js, requires-body=1,max-size=0, tag=笑普token
+http-response https:\/\/veishop\.iboxpay\.com\/nf_gateway\/nf-user-auth-web\/ignore_tk\/veishop\/v1\/* script-path=https://raw.githubusercontent.com/6Svip120apk69/gitee_q8qsTAUA_cThxc1RBVUE/main/Task/iboxpay.js, requires-body=1,max-size=0, tag=笑普token
 
 ############## surge
 
 #笑谱获取更新TOKEN
-笑谱获取更新TOKEN = type=http-response,pattern=https:\/\/veishop\.iboxpay\.com\/nf_gateway\/nf-user-auth-web\/ignore_tk\/veishop\/v1\/*,requires-body=1,max-size=0,script-path=https://raw.githubusercontent.com/ziye66666/JavaScript/main/Task/iboxpay.js
+笑谱获取更新TOKEN = type=http-response,pattern=https:\/\/veishop\.iboxpay\.com\/nf_gateway\/nf-user-auth-web\/ignore_tk\/veishop\/v1\/*,requires-body=1,max-size=0,script-path=https://raw.githubusercontent.com/6Svip120apk69/gitee_q8qsTAUA_cThxc1RBVUE/main/Task/iboxpay.js
 
 
 
@@ -124,9 +126,9 @@ let refreshtokenVal = ``;
 let middlerefreshTOKEN = [];
 if ($.isNode()) {
     // 没有设置 XP_CASH 则默认为 0 不提现
-    CASH = process.env.XP_CASH || 1;
+    CASH = process.env.XP_CASH || 0;
     // 没有设置 XP_live 则默认0
-    LIVE = process.env.XP_live || 1;
+    LIVE = process.env.XP_live || 0;
     // 没有设置 XP_phone 则默认为 0 
     phone = process.env.XP_phone || 0;
     // 没有设置 XP_sms 则默认0  不获取TOKEN
@@ -192,11 +194,39 @@ if (!COOKIE.refreshtokenVal) {
 function GetCookie() {
     if ($request && $request.url.indexOf("nf-user-auth-web") >= 0) {
         const refreshtokenVal = JSON.parse($response.body).data.refreshToken
-        $.setdata(refreshtokenVal, "refreshtoken" + $.idx);
-        $.log(
-            `[${$.name + $.idx}] 获取refreshtoken✅: 成功,refreshtokenVal: ${refreshtokenVal}`
-        );
-        $.msg($.name + $.idx, `获取refreshtoken: 成功🎉`, ``);
+
+        if (refreshtokenVal) {
+            cookie()
+
+            function cookie() {
+                bodys = $.getdata('refreshtoken' + $.idx);
+                 if (bodys) {
+                    if (bodys.indexOf(refreshtokenVal) >= 0) {
+                        $.log(
+                            `[${$.name + $.idx}] refreshtokenVal已存在✅: refreshtokenVal: ${refreshtokenVal}`
+                        );
+                        $.msg($.name + $.idx, `refreshtokenVal已存在: 🎉`, ``);
+                        $.done();
+                    } else if ($.idx == '') {
+                        $.idx = 2
+                        cookie()
+                    } else {
+                        $.idx = $.idx + 1
+                        cookie()
+                    }
+                } else {
+                    {
+                        $.setdata(refreshtokenVal, "refreshtoken" + $.idx);
+                        $.log(
+                            `[${$.name + $.idx}] 获取refreshtokenVal✅: 成功,refreshtokenVal: ${refreshtokenVal}`
+                        );
+                        $.msg($.name + $.idx, `获取refreshtokenVal: 成功🎉`, ``);
+
+                        $.done();
+                    }
+                };
+            }
+        }
     }
 
 }
@@ -369,8 +399,27 @@ async function all() {
         await splimit(); //视频上限
         await newcashlist(); //提现查询
         await cashlist(); //今日提现查询
-        if (!cashcs.amount && CASH >= 1 && $.coin.data.balance / 100 >= CASH) {
+        if (!cashcs.amount && CASH >= 1 && CASH <= 100 && $.coin.data.balance / 100 >= CASH) {
             await withdraw(); //提现
+        }
+
+        if (!cashcs.amount && CASH == 888) {
+
+            if ($.coin.data.balance / 100 >= 100) {
+                CASH = 100
+            } else if ($.coin.data.balance / 100 >= 50) {
+                CASH = 50
+            } else if ($.coin.data.balance / 100 >= 30) {
+                CASH = 30
+            } else if ($.coin.data.balance / 100 >= 15) {
+                CASH = 15
+            } else if ($.coin.data.balance / 100 >= 1) {
+                CASH = 1
+            }
+
+            if (CASH != 888) {
+                await withdraw(); //提现
+            }
         }
 
         if (LIVE >= 1 && nowTimes.getHours() >= 8 && nowTimes.getHours() <= 23 && $.sylist.resultCode && livecs < 20) {
@@ -1341,6 +1390,7 @@ function cashlist(timeout = 0) {
                     if (logs) $.log(`${O}, 今日提现记录🚩: ${data}`);
                     $.cashlist = JSON.parse(data);
                     if ($.cashlist.resultCode == 1 && data.match(/提现/g)) {
+
                         cashcs = $.cashlist.data.records.find(item => item.tradeTypeName === "提现")
                         console.log('今日已提现' + cashcs.amount / 100 + '元\n')
                         $.message +=
