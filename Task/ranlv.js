@@ -9,8 +9,8 @@ boxjs：https://raw.githubusercontent.com/ZhiYi-N/Private-Script/master/ZhiYi-N.
 #看一个视频获取ck
 目前包含：
 看视频奖励、分享奖励
-点赞视频奖励、评论视频奖励（评论内容：真好哈）
-
+点赞视频奖励、评论视频奖励
+榜单投票、榜单抽奖、脱口秀投票
 [mitm]
 hostname = ranlv.lvfacn.com
 #圈x 
@@ -31,13 +31,12 @@ const $ = Env(zhiyi)
 const notify = $.isNode() ?require('./sendNotify') : '';
 let status, videoid,myid,supportvideoid,supportrank,show;
 status = (status = ($.getval("rlstatus") || "1") ) > 1 ? `${status}` : ""; // 账号扩展字符
-const rlurlArr = []
-const rlheaderArr = []
+const rlurlArr = [], rlheaderArr = [],rlbodyArr = []
 let rlurl = $.getdata('rlurl')
 let rlheader = $.getdata('rlheader')
-
+let rlbody = $.getdata('rlbody')
 let tz = ($.getval('tz') || '1');//0关闭通知，1默认开启
-let cash = ($.getval('rlcash') || '10')//提现10
+let cash = ($.getval('rlcash') || '0')//默认不自动提现
 const invite=1;//新用户自动邀请，0关闭，1默认开启
 const logs =0;//0为关闭日志，1为开启
 var hour=''
@@ -76,32 +75,47 @@ if ($.isNode()) {
   } else {
    rlheader = process.env.RLHEADER.split()
   };
- Object.keys(rlurl).forEach((item) => {
-        if (rlurl[item]) {
-          rlurlArr.push(rlurl[item])
-        }
-    });
-    Object.keys(rlheader).forEach((item) => {
-        if (rlheader[item]) {
-          rlheaderArr.push(rlheader[item])
-        }
-    });
-
+  if (process.env.RLBODY && process.env.RLBODY.indexOf('#') > -1) {
+   rlbody = process.env.RLBODY.split('#');
+   console.log(`您选择的是用"#"隔开\n`)
+  }
+  else if (process.env.RLBODY && process.env.RLBODY.indexOf('\n') > -1) {
+   rlbody = process.env.RLBODY.split('\n');
+   console.log(`您选择的是用换行隔开\n`)
+  } else {
+   rlbody = process.env.RLBODY.split()
+  };
+  
+  Object.keys(rlurl).forEach((item) => {
+    if (rlurl[item]) {
+      rlurlArr.push(rlurl[item]);
+    }
+  });
+  Object.keys(rlheader).forEach((item) => {
+    if (rlheader[item]) {
+      rlheaderArr.push(rlheader[item]);
+    }
+  });
+  Object.keys(rlbody).forEach((item) => {
+    if (rlbody[item]) {
+      rlbodyArr.push(rlbody[item]);
+    }
+  });
     console.log(`============ 脚本执行-国际标准时间(UTC)：${new Date().toLocaleString()}  =============\n`)
     console.log(`============ 脚本执行-北京时间(UTC+8)：${new Date(new Date().getTime() + 8 * 60 * 60 * 1000).toLocaleString()}  =============\n`)
  } else {
     rlurlArr.push($.getdata('rlurl'))
     rlheaderArr.push($.getdata('rlheader'))
-    
+    rlbodyArr.push($.getdata('rlbody'))
     let rlcount = ($.getval('rlcount') || '1');
   for (let i = 2; i <= rlcount; i++) {
     rlurlArr.push($.getdata(`rlurl${i}`))
     rlheaderArr.push($.getdata(`rlheader${i}`))
-    
+    rlbodyArr.push($.getdata(`rlbody${i}`))
   }
 }
 !(async () => {
-if (!rlheaderArr[0] && !rlurlArr[0]) {
+if (!rlheaderArr[0] && !rlbodyArr[0] && !rlurlArr[0]) {
     $.msg($.name, '【提示】请先获取燃旅视频一cookie')
     return;
   }
@@ -112,17 +126,17 @@ if (!rlheaderArr[0] && !rlurlArr[0]) {
       note =''
       rlurl = rlurlArr[i];
       rlheader = rlheaderArr[i];
-    
+      rlbody = rlbodyArr[i];
       $.index = i + 1;
       console.log(`\n开始【燃旅视频${$.index}】`)
       await checkVersion()
       await index()
-      await userinfo()
+      await userinfo()      
       await task_center()
       await myVotes()
-      await wiTask()
+      await wiTask()      
       await showmsg()
-	    
+
   }
  }
 })()
@@ -157,7 +171,7 @@ let headers = rlheader.replace(/acw_tc=\w+/,'')
         message += '🔔【检测更新】 '
         if(result.code == 0){
         console.log('🎈'+result.msg+' 当前版本:'+result.data.version_code+'\n')
-        message += '🎈'+result.msg+' 当前版本:'+result.data.version_code+'\n'
+        message += '🎈'+' 当前版本:'+result.data.version_code+'\n'
         }
         }catch(e) {
           $.logErr(e, response);
@@ -212,15 +226,16 @@ let headers = rlheader.replace(/acw_tc=\w+/,'')
     try{
         const result = JSON.parse(data)
         if(logs) $.log(data)
+	//$.log('🔔【用户信息】 '+data)
         message += '🔔【用户信息】 '
         if(result.code == 0){
         myid = result.user.id
         console.log('🎈'+result.msg+' 邀请码：'+result.user.id+' 昵称：'+result.user.nickname+' 燃旅号：'+result.user.ranlvid +'\n')
         console.log('现有余额：'+result.user.balance + '提现额度：'+result.user.lines+'\n')
-	if(cash > 0 && Number(result.user.balance) >= cash && Number(result.user.lines) >= Number(result.user.balance)){
-        await wallet()
-        }	
-        message += '🎈'+result.msg+' 邀请码：'+result.user.id+' 昵称：'+result.user.nickname+' 燃旅号：'+result.user.ranlvid +'现有余额：'+result.user.balance + '提现额度：'+result.user.lines+'\n'
+        if(cash > 0 && Number(result.user.balance) >= cash && Number(result.user.lines) >= Number(result.user.balance)){
+            await wallet()
+            }
+        message += '🎈'+' 昵称：'+result.user.nickname+'  现有余额：'+result.user.balance + '  提现额度：'+result.user.lines+'\n'
         }else{
         console.log('👀我也不知道\n')
         message += '👀我也不知道\n'
@@ -255,14 +270,14 @@ let headers = rlheader.replace(/acw_tc=\w+/,'')
         console.log('幸运红包：'+luckyArr.to_num+'/'+luckyArr.num)
         let shareArr = result.data.task.find(item => item.id === 6)
         console.log('分享红包：'+shareArr.to_num+'/'+shareArr.num)
-	let rankArr = result.data.task.find(item => item.id === 11)
+        let rankArr = result.data.task.find(item => item.id === 11)
         console.log('榜单红包：'+rankArr.to_num+'/'+rankArr.num)
-        if(rankArr.to_num < rankArr.to_num){
+        if(rankArr.to_num != rankArr.num){
         show = 0;
         }
-        if(rankArr.to_num >= rankArr.to_num){
+        if(rankArr.to_num == rankArr.num){
         show = 1;
-        }	
+        }
         if(shareArr.to_num < shareArr.num){
         await share()
         await video_info()
@@ -455,7 +470,7 @@ async function wiTask(){
         const result = JSON.parse(data)
         if(logs) $.log(data)
         if(result.code == 0){
-        message += '🔔【提现任务状态】 '
+            message += '🔔【提现任务状态】 '
         console.log('🎈'+result.msg+'\n')
 
         message += '🎈'+result.msg+'\n'
@@ -466,10 +481,10 @@ async function wiTask(){
         let videoArr = result.data.find(item => item.id === 1)
         console.log('视频任务：'+videoArr.to_num+'/'+videoArr.num+' ')
         message += '点赞任务：'+praiseArr.to_num+'/'+praiseArr.num+'\n'+'评论任务：'+commentArr.to_num+'/'+commentArr.num+`\n`+'视频任务：'+videoArr.to_num+'/'+videoArr.num+'\n'
-       if(praiseArr.to_num < praiseArr.num){
+        if(praiseArr.to_num < praiseArr.num){
         await checkPraise()
         }
-       if(commentArr.to_num < commentArr.num){
+        if(commentArr.to_num < commentArr.num){
         await comment()
         }
         if(praiseArr.to_num >= praiseArr.num && commentArr.to_num >= commentArr.num && commentArr.to_num >= commentArr.num){
@@ -517,11 +532,10 @@ let url = rlurl.replace(/\d{5}$/,`${videoid}`)
 async function comment(){
 let url = rlurl.replace(/\d{5}$/,`${videoid}`)
 let newcomment;
-let commentarr = ['%E7%9C%9F%E4%B8%8D%E9%94%99%E5%93%A6','%E7%9C%9F%E5%A5%BD%E5%93%88','%E6%94%AF%E6%8C%81%E4%B8%80%E4%B8%8B','%E8%BF%98%E4%B8%8D%E9%94%99%E5%93%A6','%E6%84%9F%E8%A7%89%E8%BF%98%E5%8F%AF%E4%BB%A5','%E5%8F%AF%E4%BB%A5%E7%9A%84','%E6%84%9F%E8%B0%A2%E5%88%86%E4%BA%AB','%E4%B8%8D%E9%94%99%E5%93%9F','%E6%88%91%E5%96%9C%E6%AC%A2','%E7%9C%9F%E4%BC%98%E7%A7%80','%E6%9C%89%E4%BA%9B%E4%BC%98%E7%A7%80']
+let commentarr = ['%E7%9C%9F%E4%B8%8D%E9%94%99%E5%93%A6','%E6%94%AF%E6%8C%81%E4%B8%80%E4%B8%8B','%E8%BF%98%E4%B8%8D%E9%94%99%E5%93%A6','%E6%84%9F%E8%A7%89%E8%BF%98%E5%8F%AF%E4%BB%A5','%E5%8F%AF%E4%BB%A5%E7%9A%84','%E6%84%9F%E8%B0%A2%E5%88%86%E4%BA%AB','%E4%B8%8D%E9%94%99%E5%93%9F','%E6%88%91%E5%96%9C%E6%AC%A2','%E7%9C%9F%E4%BC%98%E7%A7%80','%E6%9C%89%E4%BA%9B%E4%BC%98%E7%A7%80']
 let x = Math.random()
 let no = Math.round( x < 0.1? ((x+0.1)*9) : (x*9))
 newcomment = commentarr[no]
-
  return new Promise((resolve) => {
     let comment_url = {
    		url: `https://ranlv.lvfacn.com/api.php/Ranlv/addComments?content=${newcomment}&${url}`,
@@ -534,7 +548,7 @@ newcomment = commentarr[no]
         message += '🔔【评论视频】'
         await sleep(Math.random()*30000)
         if(result.code == 0){
-	     console.log('🎈'+result.msg+'\n')
+        console.log('🎈'+result.msg+'\n')
         message += '🎈'+result.msg+'\n'
         }else{
         console.log('👀'+result.msg+'\n')
@@ -577,17 +591,17 @@ let new_access_token = access_token.replace(/access_token=/,'')
         if(logs) $.log(data)
         if(result.code == 0){
         console.log('🎈投票查询'+result.msg+' 可投票数：'+result.data.votes+'\n')
-        message += '🎈投票查询'+result.msg+' 可投票数：'+result.data.votes+'\n'
+        message += '🎈'+' 可投票数：'+result.data.votes+'\n'
         let lottery_num = result.data.rate
         if(result.data.votes > 0){
-	if(show == 0){
-        await mySupport()
-        }
-        if(show == 1){
-        await getRank()
-        }
-        await goVote()
-        await vote_rewards()
+            if(show == 0){
+                await mySupport()
+            }
+            if(show == 1){
+                await getRank()
+            }
+            await goVote()
+            await vote_rewards()
         }
         if(lottery_num > 0){
         //for(let i = 0; i < lottery_num; i++){
@@ -618,6 +632,7 @@ let url = rlurl.replace(/&video_id=\d{5}/,``)
     try{
         const result = JSON.parse(data)
         if(logs) $.log(data)
+	//$.log('🎈榜单: '+data)
         if(result.code == 0){
         let videoid_list = data.match(/"id":\d{5}/g)
         let idex = Math.random()
@@ -649,11 +664,11 @@ let url = rlurl.replace(/\d{5}$/,`${supportvideoid}`)
    $.post(goVote_url,async(error, response, data) =>{
     try{
         const result = JSON.parse(data)
-        if(logs)$.log(data)
+        if(logs) $.log(data)
         if(result.code == 0){
         //await sleep(Math.random()*30000)
-	    console.log('🎈'+result.msg+'\n')
-        message += '🎈'+result.msg+'\n'
+	   console.log('🎈'+result.msg+'\n')
+        //message += '🎈'+result.msg+'\n'
         }else{
         console.log('👀'+result.msg+'\n')
         //message += '👀'+"我也不知道\n"
@@ -696,7 +711,8 @@ let url = rlurl.replace(/\d{5}$/,`${supportvideoid}`)
 }
 //lottery
 async function lottery(){
-let user_token = rlurl.match(/user_token=\w+.\w+.\w+/)+''
+//let user_token = rlurl.match(/user_token=\w+.\w+.\w+/)+''
+let user_token = rlurl.match(/user.*?(?=&)/)+''
 let access_token = rlurl.match(/access_token=\w+/)+''
 let new_user_token = user_token.replace(/user_token=/,'')
 let new_access_token = access_token.replace(/access_token=/,'')
@@ -719,6 +735,7 @@ let new_access_token = access_token.replace(/access_token=/,'')
     	}
    $.post(lottery_url,async(error, response, data) =>{
     try{
+	//$.log('lottery响应体：\n'+data)
         const result = JSON.parse(data)
         if(logs) $.log(data)
         await sleep(Math.random()*30000)
@@ -737,16 +754,15 @@ let new_access_token = access_token.replace(/access_token=/,'')
     })
    })
 }
-
 //getRank
 async function getRank(){
 let url = rlurl.replace(/&video_id=\d{5}/,``)
- return new Promise((resolve) => {
+    return new Promise((resolve) => {
     let mySupport_url = {
-   		url: `https://ranlv.lvfacn.com/api.php/Rcharts/getRank?&basis=1&id=60&list_rows=12&ran=1&member_id=${myid}&page=1&${url}`,
-    	headers: JSON.parse(rlheader),
-    	}
-   $.post(mySupport_url,async(error, response, data) =>{
+            url: `https://ranlv.lvfacn.com/api.php/Rcharts/getRank?&basis=1&id=60&list_rows=12&ran=1&member_id=${myid}&page=1&${url}`,
+        headers: JSON.parse(rlheader),
+        }
+    $.post(mySupport_url,async(error, response, data) =>{
     try{
         const result = JSON.parse(data)
         if(logs) $.log(data)
@@ -757,29 +773,29 @@ let url = rlurl.replace(/&video_id=\d{5}/,``)
         let no = Math.round( idex > 0.2 ? ((idex+0.1)*10) : ((idex+0.2)*10))
         let newvideoid_list = videoid_list[no]
         supportvideoid = newvideoid_list.replace(/"id":/,'')
-	    //console.log('🎈榜单'+result.msg+'\n')
+        //console.log('🎈榜单'+result.msg+'\n')
         //message += '🎈榜单'+result.msg+'\n'
         }else{
         console.log('👀'+result.msg+'\n')
         //message += '👀'+"我也不知道\n"
         }
         }catch(e) {
-          $.logErr(e, response);
-      } finally {
+            $.logErr(e, response);
+        } finally {
         resolve();
-      } 
+        } 
     })
-   })
+    })
 }
 //withdraw
 async function withdraw(){
 let url = rlurl.replace(/&video_id=\d{5}/,``)
- return new Promise((resolve) => {
+    return new Promise((resolve) => {
     let withdraw_url = {
-   		url: `https://ranlv.lvfacn.com/api.php/Share/withdraw?&amount=${cash}&is_act=1&member_id=${myid}&${url}`,
-    	headers: JSON.parse(rlheader),
-    	}
-   $.post(withdraw_url,async(error, response, data) =>{
+            url: `https://ranlv.lvfacn.com/api.php/Share/withdraw?&amount=${cash}&is_act=1&member_id=${myid}&${url}`,
+        headers: JSON.parse(rlheader),
+        }
+    $.post(withdraw_url,async(error, response, data) =>{
     try{
         const result = JSON.parse(data)
         if(logs) $.log(data)
@@ -790,22 +806,22 @@ let url = rlurl.replace(/&video_id=\d{5}/,``)
         console.log('👀'+result.msg+'\n')
         }
         }catch(e) {
-          $.logErr(e, response);
-      } finally {
+            $.logErr(e, response);
+        } finally {
         resolve();
-      } 
+        } 
     })
-   })
+    })
 }
 //wallet
 async function wallet(){
 let url = rlurl.replace(/&video_id=\d{5}/,``)
- return new Promise((resolve) => {
+    return new Promise((resolve) => {
     let wallet_url = {
-   		url: `https://ranlv.lvfacn.com/api.php/Share/wallet?&&list_rows=1&page=1&type=2&member_id=${myid}&${url}`,
-    	headers: JSON.parse(rlheader),
-    	}
-   $.post(wallet_url,async(error, response, data) =>{
+            url: `https://ranlv.lvfacn.com/api.php/Share/wallet?&&list_rows=1&page=1&type=2&member_id=${myid}&${url}`,
+        headers: JSON.parse(rlheader),
+        }
+    $.post(wallet_url,async(error, response, data) =>{
     try{
         const result = JSON.parse(data)
         if(logs) $.log(data)
@@ -819,7 +835,7 @@ if (month >= 1 && month <= 9) {
     }
 if (day >= 0 && day <= 9) {
             day = "0" + day;
-   }
+    }
 hour = (new Date()).getHours();
 minute = (new Date()).getMinutes();
 second = (new Date()).getSeconds();
@@ -834,12 +850,12 @@ await withdraw()
         console.log('👀'+result.msg+'\n')
         }
         }catch(e) {
-          $.logErr(e, response);
-      } finally {
+            $.logErr(e, response);
+        } finally {
         resolve();
-      } 
+        } 
     })
-   })
+    })
 }
 //sleep
 function sleep(time){
@@ -863,7 +879,7 @@ async function showmsg(){
 if(tz==1){
     $.log(message+note)
     if ($.isNode()){
-    if ((hour == 12 && minute <= 20) || (hour == 23 && minute >= 40)) {
+    if (hour == 20 && minute <= 30) {
        await notify.sendNotify($.name,message+note)
      }
    }else{
