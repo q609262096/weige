@@ -31,7 +31,7 @@ jobs:
       - name: npm install
         run: |
           npm install
-      - name: '运行 【春风赚】'
+      - name: '运行 【春风转】'
         run: |
           node Task/cfz.js
         env:
