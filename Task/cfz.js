@@ -60,7 +60,7 @@ hostname = cf-api.douzhuanapi.cn
 const $ = new Env('春风转');
 let status;
 status = (status = ($.getval("cfzstatus") || "1") ) > 1 ? `${status}` : ""; // 账号扩展字符
-const cfzurlArr = [], cfzhdArr = [],cfzsbhdArr = []
+const cfzurlArr = [], cfzhdArr = []
 let concurrency = ($.getval('cfzConcurrency') || '3') - 0; // 并发执行任务的账号数，默认单账号循环执行
 concurrency = concurrency < 1 ? 1 : concurrency;
 
@@ -125,9 +125,9 @@ if (
       if(o){
         let idx = i % slot;
         if (execAcList[idx]) {
-          execAcList[idx].push({no: i + 1, cfzhd: o, cfzsbhd: cfzsbhdArr[i], cfzid: ''});
+          execAcList[idx].push({no: i + 1, cfzhd: o, cfzid: ''});
         } else {
-          execAcList[idx] = [{no: i + 1, cfzhd: o, cfzsbhd: cfzsbhdArr[i], cfzid: ''}];
+          execAcList[idx] = [{no: i + 1, cfzhd: o, cfzid: ''}];
         }
       }
     });
