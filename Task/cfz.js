@@ -84,6 +84,7 @@ if (
   } else {
     cfzurl = process.env.CFZURL.split();
   }
+	   
   if (
     process.env.CFZHD &&
     process.env.CFZHD.indexOf(COOKIES_SPLIT) > -1
@@ -92,14 +93,7 @@ if (
   } else {
     cfzhd = process.env.CFZHD.split();
   }
-  if (
-    process.env.CFZSBHD &&
-    process.env.CFZSBHD.indexOf(COOKIES_SPLIT) > -1
-  ) {
-    cfzsbhd = process.env.CFZSBHD.split(COOKIES_SPLIT);
-  } else {
-    cfzsbhd = process.env.CFZSBHD.split();
-  }
+	   
 
 
 	
@@ -113,22 +107,16 @@ if (
           cfzhdArr.push(cfzhd[item])
         }
     });
-    Object.keys(cfzsbhd).forEach((item) => {
-        if (cfzsbhd[item]) {
-          cfzsbhdArr.push(cfzsbhd[item])
-        }
-    });
+    
 
   	
   } else {	  
     cfzurlArr.push($.getdata('cfzurl'))
     cfzhdArr.push($.getdata('cfzhd'))
-    cfzsbhdArr.push($.getdata('cfzsbhd'))
     let cfzcount = ($.getval('cfzcount') || '1');
   for (let i = 2; i <= cfzcount; i++) {
     cfzurlArr.push($.getdata(`cfzurl${i}`))
     cfzhdArr.push($.getdata(`cfzhd${i}`))
-    cfzsbhdArr.push($.getdata(`cfzsbhd${i}`))
   }
   }
     let execAcList = [];
