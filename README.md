@@ -1,5 +1,6 @@
 # 以下带#为固定ck 请替换完ck后再跑 请勿fork！
-# 已经fork的请及时删除@willianmmiao 谢谢合作！
+# 已经fork的请及时删除@willianmmiao @Kt-Wong @xDoupi谢谢合作！
+# 非要那么懒？不fork不能玩？
 
 百度极速版
 
