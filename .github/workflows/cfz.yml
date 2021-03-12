@@ -3,7 +3,7 @@ name: cfz@feizao3
 on:
   workflow_dispatch:
   schedule:
-    - cron: '19,49 10-21 * * *'
+    - cron: '19,49 0-6,20-23 * * *'
   watch:
     types: started
   repository_dispatch:
