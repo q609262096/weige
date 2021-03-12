@@ -61,7 +61,7 @@ hostname = cf-api.douzhuanapi.cn
 const $ = new Env('春风转');
 let status;
 status = (status = ($.getval("cfzstatus") || "1") ) > 1 ? `${status}` : ""; // 账号扩展字符
-const cfzurlArr = [], cfzhdArr = [],cfzsbhdArr = []
+const cfzurlArr = [], cfzhdArr = []
 let concurrency = ($.getval('cfzConcurrency') || '1') - 0; // 并发执行任务的账号数，默单账号循环执行
 concurrency = concurrency < 1 ? 1 : concurrency;
 let sdid = '';sdlqid = '';tc = 0
@@ -93,14 +93,6 @@ if (
   } else {
     cfzhd = process.env.CFZHD.split();
   }
-  if (
-    process.env.CFZSBHD &&
-    process.env.CFZSBHD.indexOf(COOKIES_SPLIT) > -1
-  ) {
-    cfzsbhd = process.env.CFZSBHD.split(COOKIES_SPLIT);
-  } else {
-    cfzsbhd = process.env.CFZSBHD.split();
-  }
 
 
 	
@@ -114,22 +106,15 @@ if (
           cfzhdArr.push(cfzhd[item])
         }
     });
-    Object.keys(cfzsbhd).forEach((item) => {
-        if (cfzsbhd[item]) {
-          cfzsbhdArr.push(cfzsbhd[item])
-        }
-    });
 
   	
   } else {	
     cfzurlArr.push($.getdata('cfzurl'))
     cfzhdArr.push($.getdata('cfzhd'))
-    cfzsbhdArr.push($.getdata('cfzsbhd'))
     let cfzcount = ($.getval('cfzcount') || '1');
   for (let i = 2; i <= cfzcount; i++) {
     cfzurlArr.push($.getdata(`cfzurl${i}`))
     cfzhdArr.push($.getdata(`cfzhd${i}`))
-    cfzsbhdArr.push($.getdata(`cfzsbhd${i}`))
   }
   }
     let execAcList = [];
@@ -138,9 +123,9 @@ if (
       if(o){
         let idx = i % slot;
         if (execAcList[idx]) {
-          execAcList[idx].push({no: i + 1, cfzhd: o, cfzsbhd: cfzsbhdArr[i], cfzid: ''});
+          execAcList[idx].push({no: i + 1, cfzhd: o, cfzid: ''});
         } else {
-          execAcList[idx] = [{no: i + 1, cfzhd: o, cfzsbhd: cfzsbhdArr[i], cfzid: ''}];
+          execAcList[idx] = [{no: i + 1, cfzhd: o, cfzid: ''}];
         }
       }
     });
