@@ -70,7 +70,7 @@ const fqkkurlArr = [], fqkkhdArr = [],fqkkbodyArr = [],fqkkcount = ''
 let fqkkurl = $.getdata('fqkkurl')
 let fqkkhd = $.getdata('fqkkhd')
 let fqkey = ''
-let fqtx = ($.getval('fqtx') || '256');  // 此处修改提现金额，0.3元等于30，默认为提现一元，也就是100
+let fqtx = ($.getval('fqtx') || '234');  // 此处修改提现金额，0.3元等于30，默认为提现一元，也就是100
 let fqjs = 1
 
 
