@@ -28,5 +28,5 @@ jobs:
           node Task/baidu_speed.js
         env:
           BAIDU_CASH: ${{ secrets.BAIDU_CASH }}
-          BAIDU_COOKIE: ${{ secrets.BAIDU_COOKIE }}
+          BAIDU_COOKIE: ${{ secrets.BAIDU_COOKIE2 }}
           PUSH_KEY: ${{ secrets.PUSH_KEY }}
