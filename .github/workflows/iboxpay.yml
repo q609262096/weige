@@ -6,7 +6,7 @@ name: xp@ziye4
 on:
   workflow_dispatch:
   schedule:
-     - cron: '3,37 1,6,8,10-15 * * *'
+     - cron: '5,35  * * * *'
   watch:
     types: started
 jobs:
