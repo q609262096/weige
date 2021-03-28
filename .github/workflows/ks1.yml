@@ -6,7 +6,7 @@ name: ks1
 on:
     workflow_dispatch:
     schedule:
-      - cron: "0,30 0-16,22,23 * * *"
+      - cron: "0 */12 * * *"
     watch:
       types: [started]
     repository_dispatch:
@@ -26,9 +26,14 @@ jobs:
       - name: npm install
         run: |
           npm install
-      - name: '运行 【全民悦动】'
+      - name: '运行 【ks】'
         run: |
           node Task/ks1.js
+          node Task/ks2.js
+          node Task/ks3.js
+          node Task/ks4.js
+          node Task/ks5.js
+          node Task/ks6.js
         env:
           PUSH_KEY: ${{ secrets.PUSH_KEY }}
           BARK_PUSH: ${{ secrets.BARK_PUSH }}
