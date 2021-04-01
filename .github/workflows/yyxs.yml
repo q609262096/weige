@@ -36,7 +36,7 @@ jobs:
       - name: '运行 【yyxs】'
         if: env.YYXS_SPHD
         run: |
-          node task/yyxs.js
+          node Task/yyxs.js
         env:
           PUSH_KEY: ${{ secrets.PUSH_KEY }}
           BARK_PUSH: ${{ secrets.BARK_PUSH }}
