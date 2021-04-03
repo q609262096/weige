@@ -2,7 +2,7 @@ name: baidu_speed2
 on:
     workflow_dispatch:
     schedule:
-      - cron: "13/30 * * * *"
+      - cron: "*/30 * * * *"
     watch:
       types: [started]
 jobs:
