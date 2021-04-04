@@ -33,7 +33,7 @@ jobs:
           npm install
       - name: '运行 【葱花】'
         run: |
-          node Task/conghua3.js
+          node Task/conghua5.js
         env:
           CH_TASKCENTER: ${{ secrets.CH_TASKCENTER5 }}
           CH_SHAREREWARD: ${{ secrets.CH_SHAREREWARD5 }}
