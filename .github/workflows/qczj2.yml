@@ -33,7 +33,7 @@ jobs:
           npm install
       - name: '运行 【汽车之家】'
         run: |
-          node Task/qczj.js
+          node Task/qqczj.js
         env:
           QCZJ_GetUserInfoHEADER: ${{ secrets.QCZJ_GetUserInfoHEADER2 }}
           QCZJ_taskBODY: ${{ secrets.QCZJ_taskBODY2 }}
