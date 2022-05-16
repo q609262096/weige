@@ -3,11 +3,11 @@ name: 汽车之家极速版3
 on:
   workflow_dispatch:
   schedule:
-    - cron: '*/30 * * * *'
+    - cron: '15 8,18 * * *'
   watch:
     types: started
   repository_dispatch:
-    types: qczj
+    types: jj
 jobs:
   build:
 
@@ -31,15 +31,11 @@ jobs:
       - name: npm install
         run: |
           npm install
-      - name: '运行 【汽车之家】'
+      - name: '运行 jj.js'
         run: |
-          node Task/qqczj.js
+          node Task/jj.js
         env:
-          QCZJ_GetUserInfoHEADER: ${{ secrets.QCZJ_GetUserInfoHEADER3 }}
-          QCZJ_taskBODY: ${{ secrets.QCZJ_taskBODY3 }}
-          QCZJ_activityBODY: ${{ secrets.QCZJ_activityBODY3 }}
-          QCZJ_addCoinBODY: ${{ secrets.QCZJ_addCoinBODY3 }}
-          QCZJ_addCoin2BODY: ${{ secrets.QCZJ_addCoin2BODY3 }}
+          JUEJIN_COOKIE: ${{ secrets.JUEJIN_COOKIE }}
           PUSH_KEY: ${{ secrets.PUSH_KEY }}
           BARK_PUSH: ${{ secrets.BARK_PUSH }}
           TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
